@@ -3,18 +3,13 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
 
-const statusColors = {
-  pending: 'bg-yellow-100 text-yellow-700 border-yellow-200',
-  'in-progress': 'bg-blue-100 text-blue-700 border-blue-200',
-  resolved: 'bg-green-100 text-green-700 border-green-200',
-  rejected: 'bg-red-100 text-red-700 border-red-200',
+const statusConfig = {
+  pending: { color: '#C9A84C', bg: 'rgba(201,168,76,0.12)', border: 'rgba(201,168,76,0.3)' },
+  'in-progress': { color: '#0FA4AF', bg: 'rgba(15,164,175,0.12)', border: 'rgba(15,164,175,0.3)' },
+  resolved: { color: '#4CAF88', bg: 'rgba(76,175,136,0.12)', border: 'rgba(76,175,136,0.3)' },
+  rejected: { color: '#FF7A6B', bg: 'rgba(255,122,107,0.12)', border: 'rgba(255,122,107,0.3)' },
 }
-
-const priorityColors = {
-  low: 'bg-gray-100 text-gray-600',
-  medium: 'bg-orange-100 text-orange-600',
-  high: 'bg-red-100 text-red-600',
-}
+const priorityDot = { low: '#4CAF88', medium: '#C9A84C', high: '#FF7A6B' }
 
 export default function Dashboard() {
   const { user } = useAuth()
@@ -22,95 +17,112 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchGrievances = async () => {
-      try {
-        const { data } = await api.get('/grievances')
-        setGrievances(data)
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchGrievances()
+    api.get('/grievances')
+      .then(({ data }) => setGrievances(data))
+      .catch(console.error)
+      .finally(() => setLoading(false))
   }, [])
 
-  const stats = {
-    total: grievances.length,
-    pending: grievances.filter(g => g.status === 'pending').length,
-    inProgress: grievances.filter(g => g.status === 'in-progress').length,
-    resolved: grievances.filter(g => g.status === 'resolved').length,
-  }
+  const stats = [
+    { label: 'Total Reports', value: grievances.length, color: '#0FA4AF' },
+    { label: 'Pending', value: grievances.filter(g => g.status === 'pending').length, color: '#C9A84C' },
+    { label: 'In Progress', value: grievances.filter(g => g.status === 'in-progress').length, color: '#0FA4AF' },
+    { label: 'Resolved', value: grievances.filter(g => g.status === 'resolved').length, color: '#4CAF88' },
+  ]
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Welcome, {user?.name} 👋</h1>
-          <p className="text-gray-500 text-sm mt-1">Track and manage your reported issues</p>
+    <div style={{ minHeight: '100vh', background: '#F8F6F0' }}>
+
+      {/* Top bar */}
+      <div style={{ background: '#003135', padding: '2.5rem 2rem' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.75rem', color: '#0FA4AF', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: '700', marginBottom: '0.5rem' }}>My Dashboard</p>
+            <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: '400', color: '#F8F6F0', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+              Welcome, <em style={{ fontStyle: 'italic', color: '#0FA4AF' }}>{user?.name}</em>
+            </h1>
+          </div>
+          <Link to="/submit"
+            style={{ background: '#0FA4AF', color: '#003135', padding: '0.75rem 1.6rem', borderRadius: '10px', fontSize: '0.95rem', fontWeight: '700', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif", border: '2px solid #0FA4AF', transition: 'all 0.2s', boxShadow: '0 4px 16px rgba(15,164,175,0.3)' }}
+            onMouseOver={e => { e.currentTarget.style.background = '#AFDDE5' }}
+            onMouseOut={e => { e.currentTarget.style.background = '#0FA4AF' }}>
+            + Report New Issue
+          </Link>
         </div>
-        <Link to="/submit" className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm inline-flex items-center gap-2">
-          <span>+</span> Report New Issue
-        </Link>
       </div>
 
-      {/* Stats cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: 'Total Reports', value: stats.total, color: 'text-blue-600', bg: 'bg-blue-50' },
-          { label: 'Pending', value: stats.pending, color: 'text-yellow-600', bg: 'bg-yellow-50' },
-          { label: 'In Progress', value: stats.inProgress, color: 'text-blue-600', bg: 'bg-blue-50' },
-          { label: 'Resolved', value: stats.resolved, color: 'text-green-600', bg: 'bg-green-50' },
-        ].map((s) => (
-          <div key={s.label} className={`${s.bg} rounded-xl p-4 border border-opacity-20`}>
-            <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
-            <div className="text-sm text-gray-500 mt-0.5">{s.label}</div>
-          </div>
-        ))}
-      </div>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem' }}>
 
-      {/* Grievances list */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="font-semibold text-gray-900">Your Reports</h2>
-          <span className="text-sm text-gray-400">{grievances.length} total</span>
+        {/* Stats — using DM Sans so numbers show as 1,2,3 not Roman */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '2rem', marginTop: '-1.5rem' }}>
+          {stats.map((s) => (
+            <div key={s.label} style={{ background: 'white', borderRadius: '14px', padding: '1.5rem', border: '1.5px solid rgba(15,164,175,0.12)', boxShadow: '0 4px 20px rgba(0,49,53,0.07)' }}>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '3rem', fontWeight: '800', color: s.color, lineHeight: 1, marginBottom: '0.4rem' }}>
+                {s.value}
+              </div>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.78rem', color: '#7A9A9C', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: '600' }}>
+                {s.label}
+              </div>
+            </div>
+          ))}
         </div>
 
-        {loading ? (
-          <div className="py-16 text-center text-gray-400">Loading your reports...</div>
-        ) : grievances.length === 0 ? (
-          <div className="py-16 text-center">
-            <div className="text-4xl mb-3">📋</div>
-            <p className="text-gray-500 mb-4">No reports yet</p>
-            <Link to="/submit" className="text-blue-600 font-medium hover:underline text-sm">Report your first issue →</Link>
+        {/* Reports list */}
+        <div style={{ background: 'white', borderRadius: '16px', border: '1.5px solid rgba(15,164,175,0.12)', boxShadow: '0 4px 20px rgba(0,49,53,0.06)', overflow: 'hidden' }}>
+          <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid rgba(15,164,175,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#024950' }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1.5rem', fontWeight: '500', color: '#AFDDE5' }}>Your Reports</h2>
+            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.8rem', color: '#0FA4AF', background: 'rgba(15,164,175,0.15)', padding: '4px 14px', borderRadius: '100px', fontWeight: '700', border: '1px solid rgba(15,164,175,0.3)' }}>
+              {grievances.length} total
+            </span>
           </div>
-        ) : (
-          <div className="divide-y divide-gray-100">
-            {grievances.map((g) => (
-              <div key={g._id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <span className="font-medium text-gray-900 text-sm">{g.title}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${statusColors[g.status]}`}>
-                        {g.status}
-                      </span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${priorityColors[g.priority]}`}>
-                        {g.priority}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3 text-xs text-gray-400 flex-wrap">
-                      <span>🏷️ {g.category}</span>
-                      <span>📍 {g.location?.address || 'No location'}</span>
-                      <span>🗓️ {new Date(g.createdAt).toLocaleDateString()}</span>
-                      <span className="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-gray-500">{g.trackingId}</span>
+
+          {loading ? (
+            <div style={{ padding: '4rem', textAlign: 'center', color: '#7A9A9C', fontFamily: "'DM Sans', sans-serif", fontSize: '1rem' }}>
+              Loading your reports...
+            </div>
+          ) : grievances.length === 0 ? (
+            <div style={{ padding: '4rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>📋</div>
+              <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1.4rem', color: '#003135', marginBottom: '0.5rem', fontWeight: '500' }}>No reports yet</p>
+              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.9rem', color: '#7A9A9C', marginBottom: '1.5rem' }}>Start by reporting your first civic issue</p>
+              <Link to="/submit" style={{ color: '#F8F6F0', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif", fontSize: '0.9rem', fontWeight: '700', background: '#003135', padding: '0.6rem 1.4rem', borderRadius: '8px', border: '2px solid #003135', transition: 'all 0.2s' }}>
+                Report an Issue →
+              </Link>
+            </div>
+          ) : (
+            <div>
+              {grievances.map((g, i) => {
+                const s = statusConfig[g.status] || statusConfig.pending
+                return (
+                  <div key={g._id}
+                    style={{ padding: '1.5rem 2rem', borderBottom: i < grievances.length - 1 ? '1px solid rgba(15,164,175,0.08)' : 'none', transition: 'background 0.2s' }}
+                    onMouseOver={e => e.currentTarget.style.background = 'rgba(15,164,175,0.03)'}
+                    onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
+                          <div style={{ width: '9px', height: '9px', borderRadius: '50%', background: priorityDot[g.priority], flexShrink: 0 }}/>
+                          <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: '700', color: '#003135', fontSize: '0.95rem' }}>{g.title}</span>
+                          <span style={{ fontSize: '0.75rem', padding: '3px 12px', borderRadius: '100px', background: s.bg, color: s.color, border: `1.5px solid ${s.border}`, fontFamily: "'DM Sans', sans-serif", letterSpacing: '0.04em', fontWeight: '700', textTransform: 'capitalize' }}>
+                            {g.status}
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+                          {[`🏷 ${g.category}`, g.location?.address && `📍 ${g.location.address}`, `🗓 ${new Date(g.createdAt).toLocaleDateString()}`].filter(Boolean).map((item, j) => (
+                            <span key={j} style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.8rem', color: '#7A9A9C' }}>{item}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{ fontFamily: 'monospace', fontSize: '0.78rem', color: '#0FA4AF', background: 'rgba(15,164,175,0.08)', padding: '5px 12px', borderRadius: '7px', border: '1px solid rgba(15,164,175,0.2)', flexShrink: 0, fontWeight: '700' }}>
+                        {g.trackingId}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+                )
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

@@ -13,71 +13,51 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (form.password.length < 6) return setError('Password must be at least 6 characters')
-    setLoading(true)
-    setError('')
-    try {
-      const { data } = await api.post('/auth/register', form)
-      login(data)
-      navigate('/dashboard')
-    } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed.')
-    } finally {
-      setLoading(false)
-    }
+    setLoading(true); setError('')
+    try { const { data } = await api.post('/auth/register', form); login(data); navigate('/dashboard') }
+    catch (err) { setError(err.response?.data?.message || 'Registration failed.') }
+    finally { setLoading(false) }
   }
 
+  const iStyle = { width: '100%', padding: '0.9rem 1.1rem', borderRadius: '9px', fontSize: '0.95rem', background: 'rgba(0,49,53,0.4)', border: '1.5px solid rgba(15,164,175,0.25)', color: '#F8F6F0', fontFamily: "'DM Sans', sans-serif", outline: 'none', transition: 'all 0.2s' }
+  const lStyle = { display: 'block', fontFamily: "'DM Sans', sans-serif", fontSize: '0.78rem', color: '#7A9A9C', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: '600', marginBottom: '0.6rem' }
+  const fields = [{ label: 'Full Name', type: 'text', key: 'name', ph: 'Your full name' }, { label: 'Email Address', type: 'email', key: 'email', ph: 'you@example.com' }, { label: 'Phone (optional)', type: 'tel', key: 'phone', ph: '+880 1XX XXX XXXX' }, { label: 'Password', type: 'password', key: 'password', ph: 'Min. 6 characters' }]
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 py-10">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold">GT</span>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
-          <p className="text-gray-500 text-sm mt-1">Join thousands of active citizens</p>
+    <div style={{ minHeight: '100vh', background: '#003135', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(175,221,229,0.07) 0%, transparent 70%)', filter: 'blur(60px)', pointerEvents: 'none' }}/>
+      <div style={{ position: 'absolute', bottom: '-10%', right: '-5%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,71,52,0.08) 0%, transparent 70%)', filter: 'blur(70px)', pointerEvents: 'none' }}/>
+
+      <div className="afu" style={{ width: '100%', maxWidth: '440px', background: 'rgba(2,73,80,0.8)', backdropFilter: 'blur(20px)', borderRadius: '18px', padding: '3rem', position: 'relative', zIndex: 1, border: '1px solid rgba(15,164,175,0.25)', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '2.2rem', fontWeight: '500', color: '#F8F6F0', marginBottom: '0.4rem' }}>Create Account</h1>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.9rem', color: 'rgba(175,221,229,0.5)', fontWeight: '300' }}>Join the civic accountability movement</p>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm mb-6">
-            {error}
-          </div>
-        )}
+        {error && <div style={{ background: 'rgba(150,71,52,0.2)', border: '1px solid rgba(150,71,52,0.4)', color: '#FFAA88', padding: '0.875rem 1rem', borderRadius: '9px', fontSize: '0.875rem', marginBottom: '1.5rem', fontFamily: "'DM Sans', sans-serif" }}>{error}</div>}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
-            <input type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="John Doe" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
-            <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="you@example.com" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone (optional)</label>
-            <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="+880 1XX XXX XXXX" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-            <input type="password" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Min. 6 characters" />
-          </div>
-          <button type="submit" disabled={loading}
-            className="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60 mt-2">
-            {loading ? 'Creating account...' : 'Create Account'}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+          {fields.map(({ label, type, key, ph }) => (
+            <div key={key}>
+              <label style={lStyle}>{label}</label>
+              <input type={type} value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} required={key !== 'phone'} placeholder={ph} style={iStyle}
+                onFocus={e => { e.target.style.borderColor = '#0FA4AF'; e.target.style.boxShadow = '0 0 0 3px rgba(15,164,175,0.1)' }}
+                onBlur={e => { e.target.style.borderColor = 'rgba(15,164,175,0.25)'; e.target.style.boxShadow = 'none' }}/>
+            </div>
+          ))}
+          <button type="submit" disabled={loading} style={{ background: '#0FA4AF', color: '#003135', padding: '0.95rem', borderRadius: '9px', fontSize: '1rem', fontWeight: '700', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, border: 'none', fontFamily: "'DM Sans', sans-serif", letterSpacing: '0.04em', transition: 'all 0.2s', marginTop: '0.5rem', boxShadow: '0 4px 16px rgba(15,164,175,0.3)' }}
+            onMouseOver={e => !loading && (e.target.style.background = '#AFDDE5')}
+            onMouseOut={e => !loading && (e.target.style.background = '#0FA4AF')}>
+            {loading ? 'Creating account...' : 'Create Account →'}
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 font-medium hover:underline">Sign in</Link>
-        </p>
+        <div style={{ marginTop: '1.75rem', textAlign: 'center', paddingTop: '1.5rem', borderTop: '1px solid rgba(15,164,175,0.15)' }}>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.875rem', color: 'rgba(175,221,229,0.4)' }}>
+            Already have an account?{' '}
+            <Link to="/login" style={{ color: '#0FA4AF', textDecoration: 'none', fontWeight: '600' }}>Sign in</Link>
+          </p>
+        </div>
       </div>
     </div>
   )

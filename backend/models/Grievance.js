@@ -45,12 +45,10 @@ const grievanceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Auto-generate tracking ID before save
-grievanceSchema.pre('save', function (next) {
+grievanceSchema.pre('save', async function () {
   if (!this.trackingId) {
     this.trackingId = 'GRV-' + Date.now().toString(36).toUpperCase();
   }
-  next();
 });
 
 module.exports = mongoose.model('Grievance', grievanceSchema);
