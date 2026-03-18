@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c1: #003135;
+  --c2: #024950;
+  --c3: #964734;
+  --c4: #0FA4AF;
+  --c5: #AFDDE5;
+  --cream: #F8F6F0;
+  --gold: #C9A84C;
+  --gold-light: #E2C97E;
+  --muted: #7A9A9C;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #F8F6F0;
+  color: #003135;
+  -webkit-font-smoothing: antialiased;
+}
+
+.gold-text {
+  background: linear-gradient(135deg, #C9A84C, #E2C97E, #C9A84C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.afu { animation: fadeUp 0.7s ease forwards; }
+.afi { animation: fadeIn 0.5s ease forwards; }
+.d1 { animation-delay: 0.15s; opacity: 0; }
+.d2 { animation-delay: 0.3s; opacity: 0; }
+.d3 { animation-delay: 0.45s; opacity: 0; }
