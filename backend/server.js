@@ -25,6 +25,16 @@ app.use('/api/auth', authRoutes);
 app.use('/api/grievances', grievanceRoutes);
 app.use('/api/public', publicRoutes);
 
+
+// Anamika's features - Department routes
+const departmentRoutes = require('./routes/departments');
+app.use('/api/departments', departmentRoutes);
+
+// Anamika's features - Overdue checker
+const checkOverdueComplaints = require('./utils/overdueChecker');
+checkOverdueComplaints();
+setInterval(checkOverdueComplaints, 24 * 60 * 60 * 1000);
+
 app.get('/', (req, res) => res.send('API is running...'));
 
 app.use(errorHandler);

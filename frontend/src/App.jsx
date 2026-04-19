@@ -8,6 +8,8 @@ import Dashboard from './pages/Dashboard'
 import SubmitGrievance from './pages/SubmitGrievance'
 import TrackGrievance from './pages/TrackGrievance'
 import PublicFeed from './pages/PublicFeed'
+import DepartmentDashboard from './pages/DepartmentDashboard'
+import Leaderboard from './pages/Leaderboard'
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth()
@@ -26,6 +28,8 @@ function App() {
         <Route path="/track" element={<TrackGrievance />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/submit" element={<ProtectedRoute><SubmitGrievance /></ProtectedRoute>} />
+        <Route path="/departments" element={<DepartmentDashboard />} />
+        <Route path="/leaderboard" element={<Leaderboard />} /> 
       </Routes>
     </div>
   )
