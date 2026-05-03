@@ -8,6 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const grievanceRoutes = require('./routes/grievanceRoutes');
 const publicRoutes = require('./routes/publicRoutes');
 const errorHandler = require('./middleware/errorHandler');
+const mapRoutes = require('./routes/mapRoutes');
 
 dotenv.config();
 connectDB();
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/grievances', grievanceRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/map', mapRoutes);
 
 app.get('/', (req, res) => res.send('API is running...'));
 
