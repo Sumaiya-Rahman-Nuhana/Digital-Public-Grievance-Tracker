@@ -45,9 +45,11 @@ export default function Navbar() {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }} className="hidden md:flex">
           <Link to="/feed" style={navLinkStyle('/feed')}>Public Feed</Link>
+          <Link to="/search" style={navLinkStyle('/search')}>Search</Link>
           <Link to="/track" style={navLinkStyle('/track')}>Track Issue</Link>
           <Link to="/map" style={navLinkStyle('/map')}>Issue Map</Link>
           <Link to="/stats" style={navLinkStyle('/stats')}>Statistics</Link>
+          <Link to="/priority" style={navLinkStyle('/priority')}>Priority Ranking</Link>
           {user && <Link to="/dashboard" style={navLinkStyle('/dashboard')}>Dashboard</Link>}
 
           {user ? (
@@ -88,7 +90,7 @@ export default function Navbar() {
       </div>
       {menuOpen && (
         <div style={{ background: '#F8F6F0', borderTop: '1px solid rgba(15,164,175,0.15)', padding: '1rem 2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {[{ to: '/feed', label: 'Public Feed' }, { to: '/track', label: 'Track Issue' }, { to: '/map', label: 'Issue Map' }, { to: '/stats', label: 'Statistics' } , (user ? [{ to: '/dashboard', label: 'Dashboard' }, { to: '/submit', label: 'Report Issue' }] : [{ to: '/login', label: 'Sign In' }, { to: '/register', label: 'Get Started' }])].map(({ to, label }) => (
+          {[{ to: '/feed', label: 'Public Feed' }, { to: '/track', label: 'Track Issue' }, { to: '/map', label: 'Issue Map' }, { to: '/stats', label: 'Statistics' } , { to: '/search', label: 'Search' }, { to: '/priority', label: 'Priority Ranking' }, (user ? [{ to: '/dashboard', label: 'Dashboard' }, { to: '/submit', label: 'Report Issue' }] : [{ to: '/login', label: 'Sign In' }, { to: '/register', label: 'Get Started' }])].map(({ to, label }) => (
             <Link key={to} to={to} style={{ fontSize: '1rem', color: '#003135', textDecoration: 'none', fontFamily: "'DM Sans', sans-serif", fontWeight: '500', padding: '0.5rem 0', borderBottom: '1px solid rgba(15,164,175,0.1)' }} onClick={() => setMenuOpen(false)}>{label}</Link>
           ))}
           {user && <button onClick={handleLogout} style={{ fontSize: '1rem', color: '#964734', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontFamily: "'DM Sans', sans-serif", fontWeight: '500', padding: '0.5rem 0' }}>Logout</button>}

@@ -9,6 +9,8 @@ const grievanceRoutes = require('./routes/grievanceRoutes');
 const publicRoutes = require('./routes/publicRoutes');
 const errorHandler = require('./middleware/errorHandler');
 const mapRoutes = require('./routes/mapRoutes');
+const priorityRoutes = require('./routes/priorityRoutes');
+const searchRoutes = require('./routes/searchRoutes');
 
 dotenv.config();
 connectDB();
@@ -26,6 +28,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/grievances', grievanceRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/map', mapRoutes);
+app.use('/api/priority', priorityRoutes);
+app.use('/api/search', searchRoutes);
 
 app.get('/', (req, res) => res.send('API is running...'));
 

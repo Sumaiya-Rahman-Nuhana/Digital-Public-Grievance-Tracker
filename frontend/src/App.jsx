@@ -10,6 +10,8 @@ import TrackGrievance from './pages/TrackGrievance'
 import PublicFeed from './pages/PublicFeed'
 import MapView from './pages/MapView'
 import AreaStats from './pages/AreaStats'
+import PriorityRanking from './pages/PriorityRanking'
+import SearchFilter from './pages/SearchFilter'
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth()
@@ -28,6 +30,8 @@ function App() {
         <Route path="/track" element={<TrackGrievance />} />
         <Route path="/map" element={<MapView />} />
         <Route path="/stats" element={<AreaStats />} />
+        <Route path="/priority" element={<PriorityRanking />} />
+        <Route path="/search" element={<SearchFilter />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/submit" element={<ProtectedRoute><SubmitGrievance /></ProtectedRoute>} />
       </Routes>
