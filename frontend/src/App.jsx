@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import DepartmentDashboard from "./pages/DepartmentDashboard";
+import Leaderboard from "./pages/Leaderboard";import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
@@ -8,6 +9,10 @@ import Dashboard from './pages/Dashboard'
 import SubmitGrievance from './pages/SubmitGrievance'
 import TrackGrievance from './pages/TrackGrievance'
 import PublicFeed from './pages/PublicFeed'
+import MapView from './pages/MapView'
+import AreaStats from './pages/AreaStats'
+import PriorityRanking from './pages/PriorityRanking'
+import SearchFilter from './pages/SearchFilter'
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth()
@@ -16,7 +21,7 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ minHeight: '100vh', background: '#F8F6F0' }}>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -24,8 +29,14 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/feed" element={<PublicFeed />} />
         <Route path="/track" element={<TrackGrievance />} />
+        <Route path="/map" element={<MapView />} />
+        <Route path="/stats" element={<AreaStats />} />
+        <Route path="/priority" element={<PriorityRanking />} />
+        <Route path="/search" element={<SearchFilter />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/submit" element={<ProtectedRoute><SubmitGrievance /></ProtectedRoute>} />
+        <Route path="/departments" element={<DepartmentDashboard />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
       </Routes>
     </div>
   )
