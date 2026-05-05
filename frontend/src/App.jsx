@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import DepartmentDashboard from "./pages/DepartmentDashboard";
+import Leaderboard from "./pages/Leaderboard";import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
@@ -34,6 +35,8 @@ function App() {
         <Route path="/search" element={<SearchFilter />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/submit" element={<ProtectedRoute><SubmitGrievance /></ProtectedRoute>} />
+        <Route path="/departments" element={<DepartmentDashboard />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
       </Routes>
     </div>
   )
