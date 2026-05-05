@@ -1,16 +1,30 @@
+<<<<<<< HEAD
 # Dependencies — never commit these
+=======
+# Dependencies
+>>>>>>> origin/main
 node_modules
 backend/node_modules
 frontend/node_modules
 
+<<<<<<< HEAD
 # Environment files — never commit these
+=======
+# Environment files — NEVER commit these
+>>>>>>> origin/main
 .env
 backend/.env
 frontend/.env
 
+<<<<<<< HEAD
 # Build output
 frontend/dist
 frontend/.vite
+=======
+# Build outputs
+frontend/dist
+backend/dist
+>>>>>>> origin/main
 
 # OS files
 .DS_Store
