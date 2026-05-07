@@ -19,13 +19,9 @@ const protect = async (req, res, nextFn) => {
 };
 
 const adminOnly = (req, res, nextFn) => {
-<<<<<<< HEAD
-  if (req.user && req.user.role === 'admin') return nextFn();
-=======
   if (req.user && req.user.role === 'admin') {
     return nextFn();
   }
->>>>>>> origin/main
   return res.status(403).json({ message: 'Access denied: Admins only' });
 };
 
