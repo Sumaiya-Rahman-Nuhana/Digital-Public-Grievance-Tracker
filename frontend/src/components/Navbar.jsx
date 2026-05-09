@@ -50,6 +50,8 @@ export default function Navbar() {
           <Link to="/map" style={navLinkStyle('/map')}>Issue Map</Link>
           <Link to="/stats" style={navLinkStyle('/stats')}>Statistics</Link>
           <Link to="/priority" style={navLinkStyle('/priority')}>Priority Ranking</Link>
+          <Link to="/departments" style={navLinkStyle('/departments')}>Departments</Link>
+          <Link to="/leaderboard" style={navLinkStyle('/leaderboard')}>Leaderboard</Link>
           {user && <Link to="/dashboard" style={navLinkStyle('/dashboard')}>Dashboard</Link>}
 
           {user ? (
