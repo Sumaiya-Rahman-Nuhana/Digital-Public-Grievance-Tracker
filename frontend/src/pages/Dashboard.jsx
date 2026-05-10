@@ -10,12 +10,84 @@ const statusConfig = {
   rejected: { color: '#FF7A6B', bg: 'rgba(255,122,107,0.12)', border: 'rgba(255,122,107,0.3)' },
 }
 const priorityDot = { low: '#4CAF88', medium: '#C9A84C', high: '#FF7A6B' }
-
 const timelineIcons = {
-  pending: '🕐',
-  'in-progress': '⚙️',
-  resolved: '✅',
-  rejected: '❌',
+  pending: '🕐', 'in-progress': '⚙️', resolved: '✅', rejected: '❌',
+}
+
+function StarRating({ value, onChange }) {
+  const [hovered, setHovered] = useState(0)
+  return (
+    <div style={{ display: 'flex', gap: '4px' }}>
+      {[1, 2, 3, 4, 5].map(star => (
+        <span key={star} onClick={() => onChange(star)}
+          onMouseEnter={() => setHovered(star)}
+          onMouseLeave={() => setHovered(0)}
+          style={{ fontSize: '1.6rem', cursor: 'pointer', color: star <= (hovered || value) ? '#C9A84C' : '#E0E0E0', transition: 'color 0.15s' }}>
+          ★
+        </span>
+      ))}
+    </div>
+  )
+}
+
+function FeedbackSection({ grievanceId }) {
+  const [existing, setExisting] = useState(null)
+  const [rating, setRating] = useState(0)
+  const [comment, setComment] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [fetching, setFetching] = useState(true)
+
+  useEffect(() => {
+    api.get(`/feedback/${grievanceId}`)
+      .then(({ data }) => { if (data) { setExisting(data); setSubmitted(true) } })
+      .catch(() => {})
+      .finally(() => setFetching(false))
+  }, [grievanceId])
+
+  const handleSubmit = async () => {
+    if (!rating) return alert('Please select a rating')
+    setLoading(true)
+    try {
+      await api.post(`/feedback/${grievanceId}`, { rating, comment })
+      setSubmitted(true)
+      setExisting({ rating, comment })
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to submit feedback')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (fetching) return null
+
+  return (
+    <div style={{ marginTop: '1rem', background: 'rgba(76,175,136,0.05)', border: '1.5px solid rgba(76,175,136,0.2)', borderRadius: '10px', padding: '1.25rem' }}>
+      <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.72rem', color: '#4CAF88', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: '700', marginBottom: '0.75rem' }}>
+        {submitted ? '⭐ Your Feedback' : '⭐ Rate this Resolution'}
+      </p>
+      {submitted ? (
+        <div>
+          <StarRating value={existing?.rating || 0} onChange={() => {}} />
+          {existing?.comment && <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.85rem', color: '#003135', marginTop: '0.5rem' }}>"{existing.comment}"</p>}
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <StarRating value={rating} onChange={setRating} />
+          <textarea
+            value={comment} onChange={e => setComment(e.target.value)}
+            placeholder="Share your experience (optional)..."
+            rows={2}
+            style={{ width: '100%', padding: '0.7rem', borderRadius: '8px', border: '1.5px solid rgba(76,175,136,0.2)', fontFamily: "'DM Sans', sans-serif", fontSize: '0.85rem', color: '#003135', outline: 'none', resize: 'none', boxSizing: 'border-box' }}
+          />
+          <button onClick={handleSubmit} disabled={loading || !rating}
+            style={{ alignSelf: 'flex-start', background: '#4CAF88', color: 'white', border: 'none', borderRadius: '7px', padding: '0.5rem 1.25rem', fontFamily: "'DM Sans', sans-serif", fontSize: '0.85rem', fontWeight: '700', cursor: loading || !rating ? 'not-allowed' : 'pointer', opacity: !rating ? 0.6 : 1 }}>
+            {loading ? 'Submitting...' : 'Submit Feedback'}
+          </button>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default function Dashboard() {
@@ -45,7 +117,6 @@ export default function Dashboard() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#F8F6F0' }}>
-      {/* Top bar */}
       <div style={{ background: '#003135', padding: '2.5rem 2rem' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
@@ -63,7 +134,6 @@ export default function Dashboard() {
       </div>
 
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem' }}>
-        {/* Stats */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '2rem', marginTop: '-1.5rem' }}>
           {stats.map((s) => (
             <div key={s.label} style={{ background: 'white', borderRadius: '14px', padding: '1.5rem', border: '1.5px solid rgba(15,164,175,0.12)', boxShadow: '0 4px 20px rgba(0,49,53,0.07)', cursor: 'pointer' }}
@@ -74,7 +144,6 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Filter tabs */}
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
           {filters.map(f => (
             <button key={f} onClick={() => setFilter(f)}
@@ -84,7 +153,6 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Reports list */}
         <div style={{ background: 'white', borderRadius: '16px', border: '1.5px solid rgba(15,164,175,0.12)', boxShadow: '0 4px 20px rgba(0,49,53,0.06)', overflow: 'hidden' }}>
           <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid rgba(15,164,175,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#024950' }}>
             <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1.5rem', fontWeight: '500', color: '#AFDDE5' }}>Your Reports</h2>
@@ -110,7 +178,6 @@ export default function Dashboard() {
                 const isExpanded = expanded === g._id
                 return (
                   <div key={g._id} style={{ borderBottom: i < filtered.length - 1 ? '1px solid rgba(15,164,175,0.08)' : 'none' }}>
-                    {/* Main row */}
                     <div style={{ padding: '1.5rem 2rem', transition: 'background 0.2s', cursor: 'pointer' }}
                       onClick={() => setExpanded(isExpanded ? null : g._id)}
                       onMouseOver={e => e.currentTarget.style.background = 'rgba(15,164,175,0.03)'}
@@ -139,13 +206,11 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    {/* Feature 13: Timeline */}
                     {isExpanded && (
                       <div style={{ padding: '0 2rem 1.5rem 2rem', background: 'rgba(15,164,175,0.02)' }}>
                         <div style={{ borderTop: '1px dashed rgba(15,164,175,0.2)', paddingTop: '1.25rem' }}>
                           <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.72rem', color: '#0FA4AF', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: '700', marginBottom: '1rem' }}>Timeline</p>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                            {/* Submitted */}
                             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                               <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(15,164,175,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', flexShrink: 0 }}>📝</div>
                               <div>
@@ -153,7 +218,6 @@ export default function Dashboard() {
                                 <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.78rem', color: '#7A9A9C' }}>{new Date(g.createdAt).toLocaleString()}</p>
                               </div>
                             </div>
-                            {/* Updates */}
                             {g.updates && g.updates.map((u, idx) => (
                               <div key={idx} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                                 <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(15,164,175,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', flexShrink: 0 }}>💬</div>
@@ -163,7 +227,6 @@ export default function Dashboard() {
                                 </div>
                               </div>
                             ))}
-                            {/* Current status */}
                             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                               <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: s.bg, border: `1.5px solid ${s.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', flexShrink: 0 }}>{timelineIcons[g.status]}</div>
                               <div>
@@ -172,6 +235,11 @@ export default function Dashboard() {
                               </div>
                             </div>
                           </div>
+
+                          {/* Feature 12: Feedback & Ratings — only for resolved */}
+                          {g.status === 'resolved' && (
+                            <FeedbackSection grievanceId={g._id} />
+                          )}
                         </div>
                       </div>
                     )}

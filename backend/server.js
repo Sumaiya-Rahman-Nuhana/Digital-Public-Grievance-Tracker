@@ -11,6 +11,7 @@ const errorHandler = require('./middleware/errorHandler');
 const mapRoutes = require('./routes/mapRoutes');
 const priorityRoutes = require('./routes/priorityRoutes');
 const searchRoutes = require('./routes/searchRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
 
 dotenv.config();
 connectDB();
@@ -30,7 +31,7 @@ app.use('/api/public', publicRoutes);
 app.use('/api/map', mapRoutes);
 app.use('/api/priority', priorityRoutes);
 app.use('/api/search', searchRoutes);
-
+app.use('/api/feedback', feedbackRoutes);
 
 // Anamika's features - Department routes
 const departmentRoutes = require('./routes/departments');
