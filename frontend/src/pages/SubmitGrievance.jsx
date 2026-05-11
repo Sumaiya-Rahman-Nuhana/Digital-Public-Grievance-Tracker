@@ -5,7 +5,7 @@ import api from '../api/axios'
 const categories = ['road', 'drainage', 'water', 'electricity', 'healthcare', 'education', 'other']
 const priorities = ['low', 'medium', 'high']
 
-const keywordMap = [
+const keywordMap = [ //feature 14 keyword settings
   { keywords: ['road', 'pothole', 'street', 'pavement', 'highway', 'footpath', 'crack', 'bump'], category: 'road', dept: 'City Corporation' },
   { keywords: ['drain', 'drainage', 'flood', 'waterlog', 'sewer', 'sewage', 'clog', 'overflow'], category: 'drainage', dept: 'City Corporation' },
   { keywords: ['water', 'pipe', 'supply', 'leak', 'tap', 'drinking', 'wasa', 'contaminate'], category: 'water', dept: 'WASA' },
@@ -14,7 +14,7 @@ const keywordMap = [
   { keywords: ['school', 'education', 'teacher', 'student', 'college', 'university', 'class', 'book'], category: 'education', dept: 'Education Board' },
 ]
 
-function getSuggestion(text) {
+function getSuggestion(text) { //feature 14
   const lower = text.toLowerCase()
   for (const entry of keywordMap) {
     if (entry.keywords.some(kw => lower.includes(kw))) {

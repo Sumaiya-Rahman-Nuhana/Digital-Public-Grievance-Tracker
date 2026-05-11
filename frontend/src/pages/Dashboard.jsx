@@ -94,7 +94,7 @@ export default function Dashboard() {
   const { user } = useAuth()
   const [grievances, setGrievances] = useState([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState('all')
+  const [filter, setFilter] = useState('all') //feature 13
   const [expanded, setExpanded] = useState(null)
 
   useEffect(() => {
