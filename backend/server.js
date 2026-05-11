@@ -11,7 +11,7 @@ const errorHandler = require('./middleware/errorHandler');
 const mapRoutes = require('./routes/mapRoutes');
 const priorityRoutes = require('./routes/priorityRoutes');
 const searchRoutes = require('./routes/searchRoutes');
-const feedbackRoutes = require('./routes/feedbackRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes'); //feature 12 feedback
 
 dotenv.config();
 connectDB();
@@ -30,7 +30,7 @@ app.use('/api/grievances', grievanceRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/map', mapRoutes);
 app.use('/api/priority', priorityRoutes);
-app.use('/api/search', searchRoutes);
+app.use('/api/search', searchRoutes); //feature 12 feedback
 app.use('/api/feedback', feedbackRoutes);
 
 // Anamika's features - Department routes
@@ -41,11 +41,11 @@ app.use('/api/departments', departmentRoutes);
 const checkOverdueComplaints = require('./utils/overdueChecker');
 checkOverdueComplaints();
 setInterval(checkOverdueComplaints, 24 * 60 * 60 * 1000);
-
+// real time update feature 11
 app.get('/', (req, res) => res.send('API is running...'));
 
 app.use(errorHandler);
-
+//real time update feature11
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
   socket.on('disconnect', () => console.log('Client disconnected:', socket.id));
