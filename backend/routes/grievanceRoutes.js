@@ -4,7 +4,13 @@ const { createGrievance, getGrievances, getGrievanceById, updateGrievance } = re
 const { protect } = require('../middleware/authMiddleware');
 const Grievance = require('../models/Grievance');
 
-router.route('/').get(protect, getGrievances).post(protect, createGrievance);
+router.route('/').get(protect, getGrievances).post(protect, async (req, res, next) => {
+  await createGrievance(req, res);
+  if (res.statusCode === 201) {
+    const io = req.app.get('io');
+    if (io) io.emit('newGrievance', { title: req.body.title });
+  }
+});
 
 router.get('/track/:trackingId', async (req, res) => {
   try {
@@ -18,7 +24,13 @@ router.get('/track/:trackingId', async (req, res) => {
   }
 });
 
-router.route('/:id').get(protect, getGrievanceById).put(protect, updateGrievance);
+router.route('/:id').get(protect, getGrievanceById).put(protect, async (req, res) => {
+  await updateGrievance(req, res);
+  if (res.statusCode === 200) {
+    const io = req.app.get('io');
+    if (io) io.emit('grievanceUpdated', { title: req.body.title || '', status: req.body.status || '' });
+  }
+});
 
 router.put('/:id/upvote', protect, async (req, res) => {
   try {

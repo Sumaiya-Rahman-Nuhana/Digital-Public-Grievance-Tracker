@@ -35,7 +35,7 @@ export default function PublicFeed() {
     fetchFeed()
   }, [sort, category, status])
 
-  const handleUpvote = async (id) => {
+  const handleUpvote = async (id) => { // upvote handle
     if (!user) return alert('Please sign in to upvote issues')
     setUpvotingId(id)
     try {
